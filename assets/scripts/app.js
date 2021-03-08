@@ -68,10 +68,12 @@ const cancelDeletion = () => {
 const closeBackdropHandler = () => {
   closeMovieModal();
   cancelDeletion();
+  clearInputs();
 };
 
 const closeAddMovieHandler = () => {
   closeMovieModal();
+  toggleBackdrop();
   clearInputs();
 };
 
@@ -118,17 +120,25 @@ const deleteMovieHandler = id => {
   movies.splice(idIndex, 1);
   const movieList = document.getElementById('movie-list');
   movieList.children[idIndex].remove();
+  cancelDeletion();
+  updateUI();
 };
 
 const startDeleteMovieHandler = id => {
   deleteModal.classList.add('visible');
   toggleBackdrop();
   const cancelDelBtn = deleteModal.querySelector('.btn--passive');
-  const confirmDelBtn = deleteModal.querySelector('.btn--danger');
+  let confirmDelBtn = deleteModal.querySelector('.btn--danger');
+
+  confirmDelBtn.replaceWith(confirmDelBtn.cloneNode(true));
+
+  confirmDelBtn = deleteModal.querySelector('.btn--danger');
+
+  confirmDelBtn.removeEventListener('click', deleteMovieHandler.bind(null, id));
+  cancelDelBtn.removeEventListener('click', cancelDeletion);
 
   cancelDelBtn.addEventListener('click', cancelDeletion);
   confirmDelBtn.addEventListener('click', deleteMovieHandler.bind(null, id));
-  deleteMovie(id);
 };
 
 // HANDLERS
